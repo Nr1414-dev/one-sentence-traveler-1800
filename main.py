@@ -17,6 +17,15 @@ SENTENCE = (
 
 MAX_CHARS = 200
 
+# Words coined after 1800 that the brief forbids: a sentence using one of
+# these builds from knowledge a traveler from 1800 could not have, so the
+# program refuses it instead of shipping it.
+POST_1800_WORDS = (
+    "internet", "computer", "screen", "telegraph", "telephone", "video",
+    "data", "network", "online", "digital", "website", "email", "pixel",
+    "software", "broadcast", "satellite", "microchip",
+)
+
 
 def pick_output_dir():
     for key in ("MAKEFUN_OUTPUT_DIR", "ENTRY_OUTPUT_DIR"):
@@ -37,6 +46,10 @@ def check_sentence(text):
         raise ValueError("entry holds a control character")
     if text.count(".") != 1 or not text.endswith("."):
         raise ValueError("entry must be exactly one sentence")
+    lowered = text.lower()
+    for word in POST_1800_WORDS:
+        if word in lowered:
+            raise ValueError("entry uses a word coined after 1800: %s" % word)
 
 
 def main():
